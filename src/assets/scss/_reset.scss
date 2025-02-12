@@ -1,0 +1,115 @@
+@charset "UTF-8";
+@use 'sass:map';
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////// reset /////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+*{
+    color:#000;
+    list-style: none;
+    margin:0;
+    padding:0;
+    border:0;
+    box-sizing:border-box;
+    line-height:1;
+}
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section{
+    display: block;
+}
+body{
+    position:relative;
+    margin:0;
+    padding:0;
+    width:100%;
+    -webkit-text-size-adjust:none;
+    -moz-text-size-adjust:none;
+    -ms-text-size-adjust:none;
+    overflow: auto;
+}
+a{
+    color:#000;
+    display:block;
+    text-decoration:none;
+    cursor:pointer;
+}
+ol, ul{
+    list-style:none;
+}
+em{
+    font-style:normal;
+}
+b{
+    font-size:inherit;
+    letter-spacing:inherit;
+}
+pre{
+    line-height:1.76;
+}
+table{
+    width:100%;
+    border-spacing:0;
+}
+
+
+// 자동완성
+input{
+    &:-webkit-autofill,
+    &:-internal-autofill-selected{
+        -webkit-box-shadow:0 0 0 30px #f4f4f4 inset;
+        -webkit-text-fill-color:#000000;
+    }
+    &::read-only,
+    &::-moz-read-only{
+        background:#dadada;
+        cursor:default;
+    }
+    &::-moz-focus-inner{
+        border:0;
+        padding:0;
+    }
+    &:disabled{
+        background-color:#d2d2d2 !important;
+    }
+}
+
+
+button{
+    background:none;
+    border:0;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    cursor:pointer;
+    &::-moz-focus-inner{
+        border:0;
+        padding:0;
+    }
+}
+
+address{
+    font-style:normal;
+}
+::placeholder{
+    color:#7f7f7f;
+    font-size:inherit;
+    font-weight:300;
+}
+// 스크롤 디자인
+::-webkit-scrollbar{
+    width:6px;
+    height:6px;
+    background-color:transparent;
+}
+::-webkit-scrollbar-thumb{
+    background:#444;
+}
+:focus {
+    outline: none;
+}
+::selection{
+    background:#ddd;
+}
+// 미디어쿼리
+//@media screen and (max-width:1024px){ html{ font-size: 14px; } }
+//@media screen and (max-width:768px){ html{ font-size: 12px; } }
+//@media screen and (max-width:500px){ html{ font-size: 11px; } }

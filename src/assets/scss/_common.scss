@@ -1,0 +1,224 @@
+/* global.scss */
+@use 'sass:map';
+//////////////////////////////////////////////////////////////
+////////////////////////// 공통 css //////////////////////////
+//////////////////////////////////////////////////////////////
+
+// only 스크린리더
+.visually-hidden {
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%); 
+    margin: -1px;
+}
+
+// 텍스트
+$font-weights: (
+    'Thin': 100,
+    'ExtraLight': 200,
+    'Light': 300,
+    'Regular': 400,
+    'Medium': 500,
+    'SemiBold': 600,
+    'Bold': 700,
+    'ExtraBold': 800,
+    'Black': 900
+);
+// Pretendard 폰트
+@each $style, $weight in $font-weights {
+    @font-face {
+        font-family: 'Pretendard';
+        src: url('@/assets/font/pretendard/Pretendard-#{$style}.woff') format('woff');
+        font-weight: $weight;
+    }
+}
+  
+// SUIT 폰트
+@each $style, $weight in $font-weights {
+    $suit-style: if($style == 'Black', 'Heavy', $style);
+    @font-face {
+        font-family: 'SUIT';
+        src: url('@/assets/font/SUIT/SUIT-#{$suit-style}.woff2') format('woff2');
+        font-weight: $weight;
+    }
+}
+*{
+    font-family: 'Pretendard';
+    font-weight: map.get($font-weights, 'Regular');
+}
+
+
+// 공통
+*[onclick]{ cursor: pointer; }
+.mobile_only{ display: none !important; }
+
+.red_dot::after{
+    content: "*";
+    color: #ef280e;
+    margin-left: 2px;
+}
+
+@media screen and (max-width:1024px){
+    .mobile_only{ display: block !important; }
+    .mobile_none{ display: none !important; }
+}
+
+
+// 말줄임
+@mixin text-cut($lines) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+}
+@for $i from 1 through 5 {
+    .text_cut#{$i} { @include text-cut($i); }
+}
+
+// 인풋클리어
+.inputClear_wrap{
+    position: relative;
+    height: 100%;
+}
+.inputClearBtn{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    visibility: hidden;
+
+    img{ position: static !important; }
+}
+
+
+
+///////////////////////////// 입력폼 /////////////////////////////
+$input-types: ("text", "password", "number", "tel", "email");
+@each $type in $input-types {
+    input[type="#{$type}"] {
+        background-color: #fff;
+        border: 1px solid #c7c7c7;
+        border-radius: 2px;
+        padding: 0 10px;
+        font-size: 14px;
+        height: 40px;
+        color: #000;
+
+        &.readonly{
+            border: none;
+            background-color: #ececec;
+        }
+    }
+}
+
+textarea{
+    background-color: #fff;
+    border: 1px solid #cecece;
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 2px;
+    min-height: 200px;
+}
+
+select{
+    height: 28px;
+    border: 1px solid #cecece;
+    border-radius: 4px;
+    padding: 0 22px 0 8px;
+    font-size: 13px;
+    color: #000;
+    background: #fff url('@/assets/images/select.png') no-repeat 50% / 7px;
+    background-position-x:calc(100% - 10px);
+    appearance:none;
+    -webkit-appearance:none;
+
+    option{ font-size:inherit; }
+    &::-ms-expand{ display:none; }
+    &:focus::-ms-value{ background-color:inherit; color:inherit; }
+}
+
+
+
+/////////////////////////////////// width  /////////////////////////////
+$min-widths: (
+    "n": 0,
+    "60": 60px,
+    "600": 600px,
+    "970": 970px,
+    "1190": 1190px,
+    "1300": 1300px
+);
+
+@each $key, $value in $min-widths {
+    .minW#{$key} {
+        min-width: $value !important;
+    }
+}
+
+
+$max-widths: (
+    "40": 40px,
+    "50": 50px,
+    "60": 60px,
+    "80": 80px,
+    "100": 100px,
+    "110": 110px,
+    "120": 120px,
+    "130": 130px,
+    "150": 150px,
+    "160": 160px,
+    "180": 180px,
+    "200": 200px,
+    "220": 220px,
+    "240": 240px,
+    "250": 250px,
+    "260": 260px,
+    "280": 280px,
+    "300": 300px,
+    "320": 320px,
+    "330": 330px,
+    "360": 360px,
+    "380": 380px,
+    "400": 400px,
+    "420": 420px,
+    "440": 440px,
+    "450": 450px,
+    "460": 460px,
+    "500": 500px,
+    "520": 520px,
+    "540": 540px,
+    "600": 600px,
+    "640": 640px,
+    "650": 650px,
+    "700": 700px,
+    "720": 720px,
+    "740": 740px,
+    "800": 800px,
+    "820": 820px,
+    "920": 920px,
+    "1000": 1000px,
+    "1200": 1200px,
+    "1420": 1420px
+);
+
+@each $key, $value in $max-widths {
+    .maxW#{$key} {
+        max-width: $value !important;
+    }
+}
+
+////////////////////////////// width percent ///////////////////////////
+@for $i from 1 through 20 {
+    $percent: $i * 5;
+    .W#{$percent}p {
+        width: $percent * 1% !important;
+    }
+}
+
