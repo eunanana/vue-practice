@@ -19,6 +19,10 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       // component: () => import('../views/LoginView.vue'),
     },
+    {
+      path: '/',
+      redirect: '/login' // '/'로 접근하면 '/login'으로 이동
+    }
   ],
 })
 
