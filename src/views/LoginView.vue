@@ -10,20 +10,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'; 
+
+const route = useRoute();
 const router = useRouter();
-const userId = ref('');
-const userPw = ref('');
+const authStore = useAuthStore(); // Pinia Store
 
-const login = () => {
-    if (userId.value && userPw.value) {
-        router.push('/home');
-    } else {
-        alert("값을 입력하세요");
-    }
-}
+const userId = ref('user1');
+const userPw = ref('1q2w3e4r!');
 
+const login = async () => {
+  try {
+    await authStore.login(userId.value, userPw.value);
+    // router.push(route.query.redirect || '/home');
+    await router.push('/home'); // 로그인 성공 후 이동
+  } catch (error) {
+    alert('로그인 실패: ' + error.message);
+  }
+};
+
+// watchEffect(() => {
+//   if (authStore.isLogin && !authStore.userInfo) {
+//     authStore.getUser(); // 로그인 상태면 사용자 정보 가져오기
+//   }
+// });
 </script>
 
 <style scoped>

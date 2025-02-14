@@ -1,21 +1,19 @@
 <template>
   <div class="app" >
-    <Header v-if="ShowHeaderFooter"/>
+    <Header v-if="authStore.isLogin"/>
     <main>
       <RouterView />
     </main>
-    <Footer v-if="ShowHeaderFooter"/>
+    <Footer v-if="authStore.isLogin"/>
   </div>
 </template>
 
 <script setup>
 import Footer from '@/components/layouts/Footer.vue'
 import Header from '@/components/layouts/Header.vue'
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
-const route = useRoute();
-const ShowHeaderFooter = computed(() => route.path !== '/login')
+const authStore = useAuthStore(); // 로그인 상태
 </script>
 
 <style lang="scss" scoped>

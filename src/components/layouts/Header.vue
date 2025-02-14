@@ -1,10 +1,22 @@
 <template>
   <header class="header">
     <h1>My Vue App</h1>
+    <button @click="logout">로그아웃</button>
   </header>
 </template>
 
-<script>
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const logout = async () => {
+  await authStore.logout();
+  router.push('/login');
+}
+
 </script>
 
 <style lang="scss" scoped>
