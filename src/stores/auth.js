@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
       await post("/comm/login", {
         data: { userId, userPswd },
         onSuccess: async (response) => {
-          // 로그인 성공 후 사용자 정보 셋팅팅
+          // 로그인 성공 후 사용자 정보 셋팅
           this.userInfo = response;
         },
         onError: (errorResponse) => {

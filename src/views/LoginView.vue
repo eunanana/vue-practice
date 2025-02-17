@@ -2,19 +2,18 @@
   <div class="login-container">
     <h2>로그인</h2>
     <form @submit.prevent="login">
-      <input type="text" placeholder="아이디" v-model="userId">
-      <input type="password" placeholder="비밀번호" v-model="userPw">
+      <input type="text" placeholder="아이디" v-model="userId" />
+      <input type="password" placeholder="비밀번호" v-model="userPw" />
       <button type="submit">로그인</button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth'; 
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
-const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore(); // Pinia Store
 
@@ -22,13 +21,9 @@ const userId = ref('user1');
 const userPw = ref('1q2w3e4r!');
 
 const login = async () => {
-  try {
-    await authStore.login(userId.value, userPw.value);
-    // router.push(route.query.redirect || '/home');
-    await router.push('/home'); // 로그인 성공 후 이동
-  } catch (error) {
-    alert('로그인 실패: ' + error.message);
-  }
+  await authStore.login(userId.value, userPw.value);
+  // router.push(route.query.redirect || '/home');
+  await router.push('/home'); // 로그인 성공 후 이동
 };
 
 // watchEffect(() => {
