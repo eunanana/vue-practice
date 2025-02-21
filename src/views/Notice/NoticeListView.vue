@@ -15,7 +15,7 @@
           <tr v-for="(notice, index) in noticeList" :key="notice.id">
             <td>{{ noticeList.length - index }}</td>
             <td>{{ notice.noticeTtl }}</td>
-            <td>{{ notice.noticeSn }}</td>
+            <td>{{ notice.rgtrSn }}</td>
             <td>{{ formatDateTime(notice.rgtrDt) }}</td>
           </tr>
         </tbody>

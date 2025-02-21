@@ -24,17 +24,18 @@ export const useAuthStore = defineStore('auth', {
       });
     },
 
-    async refreshAccessToken() {
-      await post("/comm/auth/refresh", { // 쿠키 기반이므로 추가 데이터 필요 없음
-        onSuccess: async () => {
-          await this.getUser(); // 새 토큰으로 사용자 정보 가져오기
-        },
-        onError: (errorResponse) => {
-          console.error("토큰 갱신 실패:", errorResponse.data.msg);
-          this.logout();
-        }
-      });
-    },
+    // async refreshAccessToken() {
+    //   console.log("resfresh Token");
+    //   await post("/comm/auth/refresh", { // 쿠키 기반이므로 추가 데이터 필요 없음
+    //     onSuccess: async () => {
+    //       await this.getUser(); // 새 토큰으로 사용자 정보 가져오기
+    //     },
+    //     onError: (errorResponse) => {
+    //       console.error("토큰 갱신 실패:", errorResponse.data.msg);
+    //       this.logout();
+    //     }
+    //   });
+    // },
 
     async getUser() {
       await get("/comm/user", {

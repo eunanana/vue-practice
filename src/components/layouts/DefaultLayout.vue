@@ -28,6 +28,25 @@ import Footer from './AppFooter.vue';
 </script>
 
 <style lang="scss" scoped>
+#wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  height: 100vh;
+  min-width: 1200px;
+  min-height: 800px;
+}
+
+#contents {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  height: calc(100% - 180px);
+  background-color: #f8f8f8;
+}
+
 #footer {
   position: relative;
   overflow: hidden;

@@ -19,27 +19,47 @@ api.interceptors.request.use(config => {
 
 // 응답 인터셉터 (토큰 만료 시 자동 갱신)
 api.interceptors.response.use(
-  (response) => response,
+  async (response) => response,
   async (error) => {
     const { response, config } = error;
-
     if (response?.status === 401 && !config._retry) {
       config._retry = true; // 무한 루프 방지
       try {
-        const newAccessToken = await useAuthStore().refreshAccessToken();
+        const res = await axios.post("/comm/auth/refresh", {}, {
+          baseURL: import.meta.env.VITE_API_BASE_URL,
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        });
 
-        if (newAccessToken) {
-          localStorage.setItem("accessToken", newAccessToken);
-          config.headers.Authorization = `Bearer ${newAccessToken}`;
+        if (res?.data?.code === 200) {
+          const accessToken = res?.data?.data.accessToken;
+          localStorage.setItem("accessToken", accessToken);
+          config.headers.Authorization = `Bearer ${accessToken}`;
           return api(config); // 갱신된 토큰으로 재요청
+        } else if (response.data.code === 1401) {
+          console.log("refresh 만료");
+          useAuthStore().logout();
+          // refresh token 만료되면
+          // 서버에서 쿠키, redis 의 refresh token 삭제
+          await axios.post("/comm/auth/logout", {}, {
+            baseURL: import.meta.env.VITE_API_BASE_URL,
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" },
+          });
+          router.push("/login");
+          return;
+        } else {
+          useAuthStore().logout();
+          router.push("/login");
+          return;
         }
       } catch (refreshError) {
         refreshError
         useAuthStore().logout();
         router.push("/login");
+        return Promise.reject(error);
       }
     }
-    return Promise.reject(error);
   }
 );
 
@@ -47,30 +67,12 @@ api.interceptors.response.use(
 const request = async (method, url, { params = {}, data = {}, onSuccess, onError } = {}) => {
   try {
     const response = await api({ method, url, params, data });
-    if (response.status === 200) {
-      // 토큰 만료(1401) 시 로그아웃
-      if (response.data.code === 1401) {
-        console.log("Expired Token...");
-        useAuthStore().logout();
-
-        // 서버에서 쿠키 삭제
-        await axios.post("/comm/auth/logout", {}, {
-          baseURL: import.meta.env.VITE_API_BASE_URL,
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-        router.push("/login");
-        return;
-
-      } else if (response.data.code === 1402) {
-        useAuthStore().logout();
-        router.push("/login");
-        return;
-      }
+    if (response?.status === 200) {
       if (onSuccess) onSuccess(response.data);
       return response.data;
     }
   } catch (error) {
+    console.log(error);
     // api 서버에서 의도(정의)하지 않은 에러 발생
     if (onError) {
       onError(error.response); // 에러 시 실행할 콜백 함수 (서버 메시지 포함)
