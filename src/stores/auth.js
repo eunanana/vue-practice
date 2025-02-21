@@ -10,14 +10,13 @@ export const useAuthStore = defineStore('auth', {
     async login(userId, userPswd) {
       await post("/comm/login", {
         data: { userId, userPswd },
-        onSuccess: async (response) => {
-          // 로그인 성공 후 사용자 정보 셋팅
-          this.userInfo = response;
-        },
-        onError: (errorResponse) => {
-          console.error(errorResponse);
-          if (errorResponse.status === 401) {
-            alert("아이디 또는 비밀번호를 정확히 입력해 주세요.");
+        onSuccess: (response) => {
+          if (response.code === 200) {
+            // 로그인 성공 후 사용자 정보 셋팅
+            localStorage.setItem("accessToken", response.data.accessToken);
+            this.userInfo = response.data.userId;
+          } else if (response.code === 1403) {
+            alert(response.msg);
           } else {
             alert("로그인에 실패했습니다.");
           }
@@ -32,7 +31,6 @@ export const useAuthStore = defineStore('auth', {
         },
         onError: (errorResponse) => {
           console.error("토큰 갱신 실패:", errorResponse.data.msg);
-          alert("토큰 갱신 실패했습니다다.");
           this.logout();
         }
       });
@@ -40,8 +38,10 @@ export const useAuthStore = defineStore('auth', {
 
     async getUser() {
       await get("/comm/user", {
-        onSuccess: (data) => {
-          this.userInfo = data; // 성공 시 사용자 정보 저장
+        onSuccess: (response) => {
+          if (response.code === 200) {
+            this.userInfo = response.data; // 성공 시 사용자 정보 저장
+          }
         },
         onError: (errorResponse) => {
           console.error("사용자 정보를 가져오지 못했습니다:", errorResponse.data.msg);
@@ -52,19 +52,12 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-      // 서버에서 쿠키 삭제
-      await post("/comm/auth/logout", {
-        onSuccess: () => {
-          this.userInfo = null; // 상태 초기화
-        },
-        onError: (errorResponse) => {
-          console.error("로그아웃 실패:", errorResponse.data.msg);
-          this.userInfo = null;
-          // alert("로그아웃 실패");
-        }
-      });
-    }
+      // client 로그아웃만 처리
+      this.userInfo = null;
+      localStorage.removeItem("accessToken");
+    },
   },
+
 
   getters: {
     isLogin: (state) => !!state.userInfo, // userInfo 존재 여부로 로그인 상태 판단

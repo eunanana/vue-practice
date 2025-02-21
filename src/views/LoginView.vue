@@ -25,12 +25,6 @@ const login = async () => {
   // router.push(route.query.redirect || '/home');
   await router.push('/home'); // 로그인 성공 후 이동
 };
-
-// watchEffect(() => {
-//   if (authStore.isLogin && !authStore.userInfo) {
-//     authStore.getUser(); // 로그인 상태면 사용자 정보 가져오기
-//   }
-// });
 </script>
 
 <style scoped>

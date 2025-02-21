@@ -1,12 +1,55 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
 import { useAuthStore } from '@/stores/auth'
+import Home from '../views/HomeView.vue'
+import Login from '../views/LoginView.vue'
+import Board from '../views/BoardView.vue'
 
+/**
+ * path : route를 찾을 수 있는 url path
+ * name : route로 연결할 때 사용하는 이름 (선택 사항)
+ * component : route에서 불러와질 컴포넌트
+ * props :  path부분의 :name을 props로 전달 (선택 사항)
+ */
 const routes = [
-  { path: '/', redirect: '/home' },
-  { path: '/home', component: HomeView, meta: { requiresAuth: true } },
-  { path: '/login', component: LoginView },
+  {
+    path: '/',
+    name: 'emptyLayout',
+    component: () => import('@/components/layouts/EmptyLayout.vue'),
+    children: [
+      {
+        path: '/',
+        redirect: '/home'
+      },
+      {
+        path: '/login',
+        component: Login
+      },
+    ],
+  },
+  {
+    path: '/',
+    name: 'defaultLayout',
+    meta: {
+      requiresAuth: true
+    },
+    component: () => import('@/components/layouts/DefaultLayout.vue'),
+    children: [
+      {
+        path: "/home",
+        component: Home,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "/board",
+        component: Board,
+        meta: { requiresAuth: true }
+      },
+    ]
+  }
+  // { path: '/', redirect: '/home' },
+  // { path: '/login', component: Login },
+  // { path: '/home', component: Home, meta: { requiresAuth: true } },
+  // { path: '/board', component: Board, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({

@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import Modal from '@/components/layouts/AppModal.vue';
+import Modal from '@/components/AppModal.vue';
 
 const isModalOpen = ref(false);
 const modalTitle = ref('title');
