@@ -2,7 +2,7 @@
   <header class="header">
     <nav>
       <router-link to="/">Main</router-link>
-      <router-link to="/board">게시판</router-link>
+      <router-link to="/notice">게시판</router-link>
       <button @click="logout">로그아웃</button>
     </nav>
   </header>

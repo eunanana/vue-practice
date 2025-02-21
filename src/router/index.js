@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import Home from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
-import Board from '../views/BoardView.vue'
+import Notice from '../views/Notice/NoticeListView.vue'
 
 /**
  * path : route를 찾을 수 있는 url path
@@ -40,8 +40,8 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: "/board",
-        component: Board,
+        path: "/notice",
+        component: Notice,
         meta: { requiresAuth: true }
       },
     ]
@@ -49,7 +49,7 @@ const routes = [
   // { path: '/', redirect: '/home' },
   // { path: '/login', component: Login },
   // { path: '/home', component: Home, meta: { requiresAuth: true } },
-  // { path: '/board', component: Board, meta: { requiresAuth: true } },
+  // { path: '/notice', component: Notice, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
