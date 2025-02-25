@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import Home from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
-import Notice from '../views/Notice/NoticeListView.vue'
+import Notice from '../views/notice/NoticeListView.vue'
+import NoticeDetail from '../views/notice/NoticeDetailView.vue'
+import NoticeWrite from '../views/notice/NoticeWriteView.vue'
 
 /**
  * path : route를 찾을 수 있는 url path
@@ -44,6 +46,18 @@ const routes = [
         component: Notice,
         meta: { requiresAuth: true }
       },
+      {
+        path: "/notice/:noticeSn",
+        name: "NoticeDetail",
+        component: NoticeDetail,
+        props: true,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "/notice/write",
+        component: NoticeWrite,
+        meta: { requiresAuth: true }
+      },
     ]
   }
   // { path: '/', redirect: '/home' },
@@ -62,17 +76,17 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
-  if (!authStore.userInfo) {
-    const storedUser = localStorage.getItem('userInfo');
+  if (!authStore.user) {
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      authStore.userInfo = JSON.parse(storedUser);
+      authStore.user = JSON.parse(storedUser);
     }
   }
 
-  if (to.path === '/login' && authStore.userInfo) {
+  if (to.path === '/login' && authStore.user) {
     next('/home'); // 로그인한 사용자가 /login으로 접근하면 /home으로 이동
   }
-  else if (to.meta.requiresAuth && !authStore.userInfo) {
+  else if (to.meta.requiresAuth && !authStore.user) {
     next('/login'); // 로그인 필요 페이지에 비로그인 상태로 접근 시 /login으로 이동
   }
   else {

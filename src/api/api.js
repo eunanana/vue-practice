@@ -47,19 +47,19 @@ api.interceptors.response.use(
             headers: { "Content-Type": "application/json" },
           });
           router.push("/login");
-          return;
+          return Promise.reject(error);
         } else {
           useAuthStore().logout();
           router.push("/login");
-          return;
+          return Promise.reject(error);
         }
       } catch (refreshError) {
-        refreshError
         useAuthStore().logout();
         router.push("/login");
-        return Promise.reject(error);
+        return Promise.reject(refreshError);
       }
     }
+    return Promise.reject(error);
   }
 );
 
@@ -72,10 +72,10 @@ const request = async (method, url, { params = {}, data = {}, onSuccess, onError
       return response.data;
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     // api 서버에서 의도(정의)하지 않은 에러 발생
     if (onError) {
-      onError(error.response); // 에러 시 실행할 콜백 함수 (서버 메시지 포함)
+      onError(error); // 에러 시 실행할 콜백 함수 (서버 메시지 포함)
     } else {
       alert("관리자에게 문의하세요.");
     }
