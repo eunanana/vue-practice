@@ -2,8 +2,8 @@
   <div class="login-container">
     <h2>로그인</h2>
     <form @submit.prevent="login">
-      <input type="text" placeholder="아이디" v-model="userId" />
-      <input type="password" placeholder="비밀번호" v-model="userPw" />
+      <input type="text" placeholder="아이디" v-model="userId" maxlength="50" />
+      <input type="password" placeholder="비밀번호" v-model="userPw" maxlength="50" />
       <button type="submit">로그인</button>
     </form>
   </div>

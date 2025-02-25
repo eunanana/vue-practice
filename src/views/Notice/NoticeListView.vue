@@ -24,20 +24,27 @@
         </tbody>
       </table>
     </div>
+
+    <!-- vue3-pagination 적용 -->
+    <Pagination v-model="currentPage" :pages="totalPages" :range-size="2" @update:modelValue="getNoticeList" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-// import { usePagination } from '@/composables/usePagination';
 import { formatDateTime } from '@/common/util.js';
 import { get } from '@/api/api';
 import { useRouter } from 'vue-router';
+import Pagination from '@hennge/vue3-pagination';
+import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 
-// const { page, total, totalPage, prevPage, nextPage, filteredPageNumbers } =
-//   usePagination(10);
 const router = useRouter();
 const noticeList = ref([]);
+// pagination
+const currentPage = ref(1); // 현재 선택된 페이지
+const pageSize = ref(5); // 페이지당 항목 수
+const totalItems = ref(0); // 전체 항목 수
+const totalPages = ref(1); // 전체 페이지 개수
 
 onMounted(() => {
   getNoticeList();
@@ -48,7 +55,9 @@ onMounted(() => {
  */
 const getNoticeListSuccess = (response) => {
   if (response?.code === 200) {
-    noticeList.value = response.data.noticeList;
+    noticeList.value = response.data.list;
+    totalItems.value = response.data.totalItems;
+    totalPages.value = Math.ceil(totalItems.value / pageSize.value);
   } else {
     getNoticeListError();
   }
@@ -67,6 +76,7 @@ const getNoticeListError = () => {
  */
 const getNoticeList = async () => {
   await get('/comm/notice/list', {
+    params: { page: currentPage.value, size: pageSize.value },
     onSuccess: getNoticeListSuccess,
     onError: getNoticeListError,
   });

@@ -4,28 +4,33 @@
     <form class="notice-form">
       <div class="form-group">
         <label for="title">제목</label>
-        <input type="text" id="title" v-model="notice.noticeTtl" required />
+        <input type="text" id="title" v-model="notice.noticeTtl" maxlength="100" />
       </div>
 
       <div class="form-group">
         <label for="content">내용</label>
-        <textarea id="content" v-model="notice.noticeCtt" required></textarea>
+        <textarea id="content" v-model="notice.noticeCtt" maxlength="1500"></textarea>
       </div>
 
-      <button type="submit" @click.prevent="confirmSave" class="btn">
-        저장
-      </button>
-      <button type="button" @click="cancel" class="btn cancel">취소</button>
+      <div class="button-group">
+        <button type="submit" @click.prevent="saveNotice" class="btn">
+          {{ isEdit ? '수정' : '저장' }}
+        </button>
+        <button type="button" @click="cancel" class="btn cancel">취소</button>
+      </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { post } from '@/api/api';
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { get, post } from '@/api/api';
+import { useRouter, useRoute } from 'vue-router';
 
+const route = useRoute();
 const router = useRouter();
+const noticeSn = route.params.noticeSn; // URL에서 noticeSn 가져오기
+const isEdit = ref(!!noticeSn);
 
 // 공지사항 입력 데이터
 const notice = ref({
@@ -33,8 +38,21 @@ const notice = ref({
   noticeCtt: '',
 });
 
-// todo: confirmSave 나중에 confirm 창 공통으로 만들기
-const confirmSave = () => {
+const getNoticeDetail = async () => {
+  if (!isEdit.value) return;
+
+  const response = await get(`/comm/notice/${noticeSn}`);
+  if (response?.code === 200) {
+    notice.value = response.data.notice;
+  }
+};
+
+onMounted(getNoticeDetail);
+
+/**
+ * 공지사항 등록/수정정
+ */
+const saveNotice = async () => {
   if (notice.value.noticeTtl === '') {
     alert('제목을 입력하세요.');
     return;
@@ -43,36 +61,24 @@ const confirmSave = () => {
     return;
   }
 
-  if (confirm('공지사항을 저장하시겠습니까?')) {
-    saveNotice();
-  }
-};
+  // todo: confirmSave 나중에 confirm 창 공통으로 만들기
+  if (!confirm(isEdit.value ? '공지사항을 수정하시겠습니까?' : '공지사항을 저장하시겠습니까?')) return;
 
-/**
- * 공지사항 목록 조회 성공 콜백
- */
-const saveNoticeSuccess = (response) => {
-  console.log(response);
-  if (response?.code === 200) {
-    router.push('/notice');
-  } else {
-    saveNoticeError();
-  }
-};
+  // await post('/comm/notice/save', {
+  //   data: notice.value,
+  //   onSuccess: saveNoticeSuccess,
+  //   onError: saveNoticeError,
+  // });
 
-/**
- * 공지사항 목록 조회 실패 콜백
- */
-const saveNoticeError = (error) => {
-  console.error(error);
-  alert('공지사항 저장에 실패했습니다.');
-};
-
-const saveNotice = async () => {
-  await post('/comm/notice/save', {
+  await post(`/comm/notice/${isEdit.value ? 'update' : 'save'}`, {
     data: notice.value,
-    onSuccess: saveNoticeSuccess,
-    onError: saveNoticeError,
+    onSuccess: () => {
+      alert(isEdit.value ? '공지사항이 수정되었습니다.' : '공지사항이 저장되었습니다.');
+      router.push('/notice');
+    },
+    onError: () => {
+      alert(isEdit.value ? '공지사항 수정에 실패했습니다.' : '공지사항 저장에 실패했습니다.');
+    },
   });
 };
 
@@ -115,6 +121,13 @@ textarea {
 
 textarea {
   height: 120px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .btn {

@@ -53,8 +53,13 @@ const routes = [
         props: true,
         meta: { requiresAuth: true }
       },
-      {
+      { // 새 글 작성
         path: "/notice/write",
+        component: NoticeWrite,
+        meta: { requiresAuth: true }
+      },
+      { // 기존 글 수정
+        path: '/notice/edit/:noticeSn',
         component: NoticeWrite,
         meta: { requiresAuth: true }
       },

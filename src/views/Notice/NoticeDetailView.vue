@@ -10,18 +10,21 @@
     </div>
     <div class="button-group">
       <button @click="goList">목록</button>
-      <button class="delete" @click="noticeDelete">삭제</button>
+      <button v-if="isOwner" class="edit" @click="goEdit">수정</button>
+      <button v-if="isOwner" class="delete" @click="noticeDelete">삭제</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { get, post } from '@/api/api';
+import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 const noticeSn = route.params.noticeSn;
 const notice = ref(null);
 
@@ -38,8 +41,19 @@ const getNoticeDetail = async () => {
 
 onMounted(getNoticeDetail);
 
+/**
+ * 현재 로그인한 사용자가 공지사항 작성자인지 확인
+ */
+const isOwner = computed(() => {
+  return notice.value?.rgtrSn === authStore.user;
+});
+
 const goList = () => {
   router.push('/notice');
+};
+
+const goEdit = () => {
+  router.push(`/notice/edit/${noticeSn}`);
 };
 
 /**
@@ -99,14 +113,13 @@ p {
 
 .button-group {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
 }
 
 button {
-  display: block;
-  margin: 20px auto;
+  display: inline-block;
   padding: 10px 15px;
   border: none;
   background: #007bff;
@@ -118,6 +131,14 @@ button {
 
 button:hover {
   background: #0056b3;
+}
+
+.edit {
+  background: #ffc107;
+}
+
+.edit:hover {
+  background: #e0a800;
 }
 
 .delete {
