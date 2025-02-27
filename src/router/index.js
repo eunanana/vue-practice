@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import Home from '../views/HomeView.vue'
-import Login from '../views/LoginView.vue'
+import Login from '../views/member/LoginView.vue'
+import Join from '../views/member/JoinView.vue'
 import Notice from '../views/notice/NoticeListView.vue'
 import NoticeDetail from '../views/notice/NoticeDetailView.vue'
 import NoticeWrite from '../views/notice/NoticeWriteView.vue'
@@ -25,6 +26,10 @@ const routes = [
       {
         path: '/login',
         component: Login
+      },
+      {
+        path: '/join',
+        component: Join
       },
     ],
   },

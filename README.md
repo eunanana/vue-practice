@@ -1,57 +1,33 @@
-# my-vue-app
+# K-Dental Admin App
 
-This template should help get you started developing with Vue 3 in Vite.
+## 프로젝트 개요
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Customize configuration
+## 프로젝트 설정 및 실행 방법
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### 1. 실행 환경
 
-## Project Setup
+- **Node.js**
+- **npm** 또는 **pnpm**, **yarn**
+
+### 2. 프로젝트 설치
 
 ```sh
+1. 패키지 설치
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+2. 개발 서버 실행
 npm run dev
-```
 
-### Compile and Minify for Production
-
-```sh
+3. 빌드 및 배포
 npm run build
-```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
+4. 테스트
 npm run test:unit
-```
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
+5. 코드 스타일 자동 수정
 npm run lint
 ```

@@ -43,7 +43,7 @@ import Footer from './AppFooter.vue';
   overflow: hidden;
   width: 100%;
   margin: 20px;
-  height: calc(100% - 180px);
+  height: calc(100% - 210px);
   background-color: #f8f8f8;
 }
 

@@ -14,7 +14,7 @@
         </thead>
         <tbody>
           <tr v-for="(notice, index) in noticeList" :key="notice.id">
-            <td>{{ noticeList.length - index }}</td>
+            <td>{{ totalItems - ((currentPage - 1) * pageSize + index) }}</td>
             <td @click="goDetail(notice.noticeSn)" class="clickable">
               {{ notice.noticeTtl }}
             </td>

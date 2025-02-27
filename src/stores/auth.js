@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { post, get } from '@/api/api';
+import { post } from '@/api/api';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -24,20 +24,20 @@ export const useAuthStore = defineStore('auth', {
       });
     },
 
-    async getUser() {
-      await get("/comm/user", {
-        onSuccess: (response) => {
-          if (response?.code === 200) {
-            this.user = response.data; // 성공 시 사용자 정보 저장
-          }
-        },
-        onError: (errorResponse) => {
-          console.error("사용자 정보를 가져오지 못했습니다:", errorResponse.data.msg);
-          alert("사용자 정보를 가져오지 못했습니다");
-          this.logout(); // 에러 발생 시 로그아웃 처리
-        }
-      });
-    },
+    // async getUser() {
+    //   await get("/comm/auth/user", {
+    //     onSuccess: (response) => {
+    //       if (response?.code === 200) {
+    //         this.user = response.data; // 성공 시 사용자 정보 저장
+    //       }
+    //     },
+    //     onError: (errorResponse) => {
+    //       console.error("사용자 정보를 가져오지 못했습니다:", errorResponse.data.msg);
+    //       alert("사용자 정보를 가져오지 못했습니다");
+    //       this.logout(); // 에러 발생 시 로그아웃 처리
+    //     }
+    //   });
+    // },
 
     async logout() {
       // client 로그아웃만 처리

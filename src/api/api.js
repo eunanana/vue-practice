@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import { useLoadingStore } from '@/stores/loading';
 import router from "@/router";
 
 const api = axios.create({
@@ -65,6 +66,9 @@ api.interceptors.response.use(
 
 // 공통 API 요청
 const request = async (method, url, { params = {}, data = {}, onSuccess, onError } = {}) => {
+  const loadingStore = useLoadingStore(); // 로딩 상태 가져오기
+  loadingStore.startLoading();
+
   try {
     const response = await api({ method, url, params, data });
     if (response?.status === 200) {
@@ -79,6 +83,8 @@ const request = async (method, url, { params = {}, data = {}, onSuccess, onError
     } else {
       alert("관리자에게 문의하세요.");
     }
+  } finally {
+    loadingStore.stopLoading(); // API 응답 후 로딩 종료
   }
 };
 

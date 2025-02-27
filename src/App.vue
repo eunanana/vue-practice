@@ -1,9 +1,12 @@
 <template>
   <div>
     <main>
-      <RouterView />
+      <LoadingOverlay />
+      <router-view />
     </main>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
+</script>
