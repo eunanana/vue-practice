@@ -1,50 +1,61 @@
 <template>
-  <div class="board">
-    <h2>게 시 판</h2>
-    <button class="btn write-btn" @click="goWrite">작성하기</button>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일자</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(notice, index) in noticeList" :key="notice.id">
-            <td>{{ totalItems - ((currentPage - 1) * pageSize + index) }}</td>
-            <td @click="goDetail(notice.noticeSn)" class="clickable">
-              {{ notice.noticeTtl }}
-            </td>
-            <td>{{ notice.rgtrName }}</td>
-            <td>{{ formatDateTime(notice.rgtrDt) }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <keep-alive>
+    <div class="board">
+      <h2>게 시 판</h2>
+      <SearchBar
+        v-model:searchType="search.type.value"
+        v-model:searchKeyword="search.keyword.value"
+        @search="onSearch"
+      />
+      <button class="btn write-btn" @click="goWrite">작성하기</button>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(notice, index) in noticeList" :key="notice.id">
+              <td>{{ page.totalItems.value - ((page.current.value - 1) * page.size.value + index) }}</td>
+              <td @click="goDetail(notice.noticeSn)" class="clickable">
+                {{ notice.noticeTtl }}
+              </td>
+              <td>{{ notice.rgtrName }}</td>
+              <td>{{ formatDateTime(notice.rgtrDt) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        v-model="page.current.value"
+        :pages="page.totalPages.value"
+        :range-size="2"
+        @update:modelValue="updateRoute"
+      />
     </div>
-
-    <!-- vue3-pagination 적용 -->
-    <Pagination v-model="currentPage" :pages="totalPages" :range-size="2" @update:modelValue="getNoticeList" />
-  </div>
+  </keep-alive>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { formatDateTime } from '@/common/util.js';
 import { get } from '@/api/api';
-import { useRouter } from 'vue-router';
-import Pagination from '@hennge/vue3-pagination';
+import { useRouter, useRoute } from 'vue-router';
+import { useListState } from '@/composables/useListState';
+import Pagination from '@hennge/vue3-pagination'; // vue3-pagination 적용
+import SearchBar from '@/components/SearchBar.vue'; // 검색창
 import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 
 const router = useRouter();
+const route = useRoute();
 const noticeList = ref([]);
-// pagination
-const currentPage = ref(1); // 현재 선택된 페이지
-const pageSize = ref(5); // 페이지당 항목 수
-const totalItems = ref(0); // 전체 항목 수
-const totalPages = ref(1); // 전체 페이지 개수
+
+// useListState 사용하여 검색 & 페이지네이션 상태 관리
+const { search, page, updateRoute, setOnQueryChange } = useListState();
 
 onMounted(() => {
   getNoticeList();
@@ -56,8 +67,8 @@ onMounted(() => {
 const getNoticeListSuccess = (response) => {
   if (response?.code === 200) {
     noticeList.value = response.data.list;
-    totalItems.value = response.data.totalItems;
-    totalPages.value = Math.ceil(totalItems.value / pageSize.value);
+    page.totalItems.value = response.data.totalItems;
+    page.totalPages.value = response.data.totalPages;
   } else {
     getNoticeListError();
   }
@@ -75,11 +86,26 @@ const getNoticeListError = () => {
  * 공지사항 목록 조회
  */
 const getNoticeList = async () => {
+  // 검색 조건을 URL에 반영하여 브라우저 히스토리에 남기기
   await get('/comm/notice/list', {
-    params: { page: currentPage.value, size: pageSize.value },
+    params: {
+      page: page.current.value - 1, // Spring Boot 에 맞춰 0부터 시작하도록 조정
+      size: page.size.value,
+      searchType: search.type.value,
+      searchKeyword: search.keyword.value,
+    },
     onSuccess: getNoticeListSuccess,
     onError: getNoticeListError,
   });
+};
+
+setOnQueryChange(getNoticeList);
+
+const onSearch = () => {
+  page.current.value = 1;
+
+  // 같은 검색어로 검색해도 재조회가 되도록 강제 실행
+  search.keyword.value === route.query.searchKeyword ? getNoticeList() : updateRoute();
 };
 
 /**

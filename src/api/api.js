@@ -75,13 +75,12 @@ const request = async (method, url, { params = {}, data = {}, onSuccess, onError
       if (onSuccess) onSuccess(response.data);
       return response.data;
     }
-  } catch (error) {
+  } catch (error) { // api 서버에서 의도(정의)하지 않은 에러 발생
     // console.log(error);
-    // api 서버에서 의도(정의)하지 않은 에러 발생
     if (onError) {
       onError(error); // 에러 시 실행할 콜백 함수 (서버 메시지 포함)
     } else {
-      alert("관리자에게 문의하세요.");
+      alert("관리자에게 문의하세요.");  // 에러 콜백 함수 정의하지 않았을 경우 메시지지
     }
   } finally {
     loadingStore.stopLoading(); // API 응답 후 로딩 종료

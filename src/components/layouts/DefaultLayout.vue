@@ -14,17 +14,6 @@
 <script setup>
 import Header from './AppHeader.vue';
 import Footer from './AppFooter.vue';
-// export default {
-//   components: {
-//     Header,
-//     Footer,
-//     LoadingBar
-//   },
-//   data: function() {
-//     return {
-//     }
-//   }
-// }
 </script>
 
 <style lang="scss" scoped>
