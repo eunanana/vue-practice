@@ -62,43 +62,36 @@ onMounted(() => {
 });
 
 /**
- * 공지사항 목록 조회 성공 콜백
- */
-const getNoticeListSuccess = (response) => {
-  if (response?.code === 200) {
-    noticeList.value = response.data.list;
-    page.totalItems.value = response.data.totalItems;
-    page.totalPages.value = response.data.totalPages;
-  } else {
-    getNoticeListError();
-  }
-};
-
-/**
- * 공지사항 목록 조회 실패 콜백
- */
-const getNoticeListError = () => {
-  // console.error('공지사항 조회 오류:', error);
-  alert('공지사항 조회에 실패했습니다.');
-};
-
-/**
  * 공지사항 목록 조회
  */
 const getNoticeList = async () => {
   // 검색 조건을 URL에 반영하여 브라우저 히스토리에 남기기
   await get('/comm/notice/list', {
+    // 파라미터터
     params: {
       page: page.current.value - 1, // Spring Boot 에 맞춰 0부터 시작하도록 조정
       size: page.size.value,
       searchType: search.type.value,
       searchKeyword: search.keyword.value,
     },
-    onSuccess: getNoticeListSuccess,
-    onError: getNoticeListError,
+
+    // 성공 콜백
+    onSuccess: (response) => {
+      if (response?.code === 200) {
+        noticeList.value = response.data.list;
+        page.totalItems.value = response.data.totalItems;
+        page.totalPages.value = response.data.totalPages;
+      } else {
+        alert('공지사항 조회에 실패했습니다.');
+      }
+    },
+
+    // 에러 콜백
+    onError: () => {
+      alert('공지사항 조회에 실패했습니다.');
+    },
   });
 };
-
 setOnQueryChange(getNoticeList);
 
 const onSearch = () => {

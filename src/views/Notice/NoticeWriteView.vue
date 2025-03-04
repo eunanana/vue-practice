@@ -64,12 +64,6 @@ const saveNotice = async () => {
   // todo: confirmSave 나중에 confirm 창 공통으로 만들기
   if (!confirm(isEdit.value ? '공지사항을 수정하시겠습니까?' : '공지사항을 저장하시겠습니까?')) return;
 
-  // await post('/comm/notice/save', {
-  //   data: notice.value,
-  //   onSuccess: saveNoticeSuccess,
-  //   onError: saveNoticeError,
-  // });
-
   await post(`/comm/notice/${isEdit.value ? 'update' : 'save'}`, {
     data: notice.value,
     onSuccess: () => {

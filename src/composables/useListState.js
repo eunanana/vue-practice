@@ -20,6 +20,7 @@ export function useListState(defaults = { searchType: "title", pageSize: 5 }) {
   };
 
   // URL 업데이트 함수
+  // 뒤로가기 했을 때 페이징이나 검색 조건 유지를 위해 쿼리스트링 저장
   const updateRoute = () => {
     router.push({
       query: {
@@ -32,6 +33,7 @@ export function useListState(defaults = { searchType: "title", pageSize: 5 }) {
 
   // URL 변경 감지 & 데이터 로딩 콜백 설정
   let onQueryChange = () => { };
+
   const setOnQueryChange = (callback) => {
     onQueryChange = callback;
   };
