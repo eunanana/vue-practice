@@ -7,6 +7,7 @@
       <button type="submit">로그인</button>
     </form>
     <p class="signup-text">아직 계정이 없으신가요? <span @click="goSignup" class="signup-link">회원가입</span></p>
+    <p class="signup-text">연습용 회원가입 <span @click="goPJoin" class="signup-link">회원가입</span></p>
   </div>
 </template>
 
@@ -29,6 +30,12 @@ const login = async () => {
 
 const goSignup = () => {
   router.push('/join');
+};
+
+const goPJoin = () => {
+  router.push({
+    name: 'PJoin',
+  });
 };
 </script>
 

@@ -31,7 +31,7 @@ import Footer from './AppFooter.vue';
   position: relative;
   overflow: hidden;
   width: 100%;
-  margin: 20px;
+  padding: 20px;
   height: calc(100% - 210px);
   background-color: #f8f8f8;
 }

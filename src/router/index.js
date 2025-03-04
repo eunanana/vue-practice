@@ -7,6 +7,7 @@ import Notice from '../views/notice/NoticeListView.vue'
 import NoticeDetail from '../views/notice/NoticeDetailView.vue'
 import NoticeWrite from '../views/notice/NoticeWriteView.vue'
 
+import PJoin from '../views/practiceMember/PJoinView.vue'
 /**
  * path : route를 찾을 수 있는 url path
  * name : route로 연결할 때 사용하는 이름 (선택 사항)
@@ -30,6 +31,12 @@ const routes = [
       {
         path: '/join',
         component: Join
+      },
+
+      {
+        path: '/practice-member/pjoin',
+        component: PJoin,
+        name: 'PJoin'
       },
     ],
   },

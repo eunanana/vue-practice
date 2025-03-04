@@ -47,8 +47,10 @@ const logout = async () => {
 }
 
 nav {
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .menu-list {
@@ -75,6 +77,7 @@ nav {
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: none;
+  z-index: 1;
 }
 
 .menu-list li:hover .submenu {
