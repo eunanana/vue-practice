@@ -6,6 +6,7 @@ import Join from '../views/member/JoinView.vue'
 import Notice from '../views/notice/NoticeListView.vue'
 import NoticeDetail from '../views/notice/NoticeDetailView.vue'
 import NoticeWrite from '../views/notice/NoticeWriteView.vue'
+import MenuManage from '../views/menu/MenuManageView.vue'
 
 import PJoin from '../views/practiceMember/PJoinView.vue'
 /**
@@ -73,6 +74,11 @@ const routes = [
       { // 기존 글 수정
         path: '/notice/edit/:noticeSn',
         component: NoticeWrite,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "/menu-manage",
+        component: MenuManage,
         meta: { requiresAuth: true }
       },
     ]

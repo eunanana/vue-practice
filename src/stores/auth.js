@@ -36,7 +36,6 @@ export const useAuthStore = defineStore('auth', {
         onSuccess: (response) => {
           if (response?.code === 200) {
             // 로그인 성공 후 사용자 정보 셋팅
-            console.log(response.data);
             localStorage.setItem("accessToken", response.data.accessToken);
             this.user = response.data.userSn;   // 로그인 후 사용자 정보 셋팅팅
             this.fetchMenu(response.data.authCode); // 로그인 후 메뉴 가져오기
@@ -57,38 +56,20 @@ export const useAuthStore = defineStore('auth', {
       sessionStorage.removeItem('menuList');  // 메뉴 초기화
     },
 
+
+    menuSuccess(menuList) {
+      this.menuList = buildMenuTree(menuList);
+      sessionStorage.setItem('menuList', JSON.stringify(this.menuList));   // 캐싱
+    },
+
     /** 권한별 메뉴 조회 */
     async fetchMenu(mbrAuth) {
       await get('/comm/menu/list', {
         params: { mbrAuth },
-        onSuccess: (response) => {
-          if (response.code === 200) {
-            this.menuList = buildMenuTree(response.data);
-            sessionStorage.setItem('menuList', JSON.stringify(this.menuList));   // 캐싱
-          } else {
-            alert('메뉴 조회 도중 오류가 발생했습니다.');
-          }
-        },
-        onError: () => {
-          alert('메뉴 조회 도중 오류가 발생했습니다.');
-        }
+        onSuccess: (response) => this.menuSuccess(response.data),
+        onError: () => alert('메뉴 조회 도중 오류가 발생했습니다.'),
       })
-    }
-
-    // async getUser() {
-    //   await get("/comm/auth/user", {
-    //     onSuccess: (response) => {
-    //       if (response?.code === 200) {
-    //         this.user = response.data; // 성공 시 사용자 정보 저장
-    //       }
-    //     },
-    //     onError: (errorResponse) => {
-    //       console.error("사용자 정보를 가져오지 못했습니다:", errorResponse.data.msg);
-    //       alert("사용자 정보를 가져오지 못했습니다");
-    //       this.logout(); // 에러 발생 시 로그아웃 처리
-    //     }
-    //   });
-    // },
+    },
   },
 
   getters: {
