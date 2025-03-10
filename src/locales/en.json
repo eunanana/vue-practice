@@ -1,0 +1,19 @@
+{
+  "common": {
+    "button": {
+      "write": "Write",
+      "list": "List",
+      "update": "Update",
+      "delete": "Delete"
+    },
+    "search": {
+      "combo_title": "Title",
+      "combo_writer": "Writer",
+      "button": "Search",
+      "placeholder": "Enter search keyword."
+    }
+  },
+  "notice": {
+    "title": "Notice"
+  }
+}

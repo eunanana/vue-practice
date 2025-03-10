@@ -7,7 +7,7 @@
         v-model:searchKeyword="search.keyword.value"
         @search="onSearch"
       />
-      <button class="btn write-btn" @click="goWrite">작성하기</button>
+      <button class="btn write-btn" @click="goWrite">{{ $t('common.button.write') }}</button>
       <div>
         <table>
           <thead>

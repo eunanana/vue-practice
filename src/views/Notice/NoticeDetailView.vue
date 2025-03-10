@@ -17,9 +17,9 @@
       </div>
     </div>
     <div class="button-group">
-      <button @click="goList">목록</button>
-      <button v-if="isOwner" class="edit" @click="goEdit">수정</button>
-      <button v-if="isOwner" class="delete" @click="noticeDelete">삭제</button>
+      <button @click="goList">{{ $t('common.button.list') }}</button>
+      <button v-if="isOwner" class="edit" @click="goEdit">{{ $t('common.button.update') }}</button>
+      <button v-if="isOwner" class="delete" @click="noticeDelete">{{ $t('common.button.delete') }}</button>
     </div>
   </div>
 </template>

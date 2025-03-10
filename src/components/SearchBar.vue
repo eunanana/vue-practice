@@ -1,17 +1,17 @@
 <template>
   <div class="search-container">
     <select v-model="searchTypeModel" class="search-select">
-      <option value="title">제목</option>
-      <option value="writer">작성자</option>
+      <option value="title">{{ $t('common.search.combo_title') }}</option>
+      <option value="writer">{{ $t('common.search.combo_writer') }}</option>
     </select>
     <input
       type="text"
       class="search-input"
       v-model="searchKeywordModel"
-      placeholder="검색어를 입력하세요."
+      placeholder="$t('common.search.placeholder')"
       @keyup.enter="onSearch"
     />
-    <button class="search-btn" @click="onSearch">검색</button>
+    <button class="search-btn" @click="onSearch">{{ $t('common.search.button') }}</button>
   </div>
 </template>
 

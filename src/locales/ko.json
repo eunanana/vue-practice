@@ -1,0 +1,19 @@
+{
+  "common": {
+    "button": {
+      "write": "글쓰기",
+      "list": "목록",
+      "update": "수정",
+      "delete": "삭제"
+    },
+    "search": {
+      "combo_title": "제목",
+      "combo_writer": "작성자",
+      "button": "검색",
+      "placeholder": "검색어를 입력하세요."
+    }
+  },
+  "notice": {
+    "title": "공지사항"
+  }
+}
