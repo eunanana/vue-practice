@@ -44,8 +44,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import { get, multipartPost } from '@/api/api';
+import { ALLOWED_FILE_TYPES } from '@/common/const';
 import { useRouter, useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -65,15 +66,11 @@ const fileList = ref([]); // 등록할 file
 const existingFileList = ref([]); // 기존에 등록된 file
 const deleteFileSnList = ref([]);
 
-// 전체 파일 개수 계산 (기존 파일 + 새 파일)
-const totalFiles = computed(() => fileList.value.length + existingFileList.value.length);
-
 const getNoticeDetail = async () => {
   if (!isEdit.value) return;
 
   const response = await get(`/comm/notice/${noticeSn}`);
   if (response?.code === 200) {
-    console.log(response.data);
     notice.value = response.data.notice;
     existingFileList.value = response.data.fileList;
   }
@@ -85,19 +82,58 @@ onMounted(getNoticeDetail);
  * 파일 추가 버튼 클릭 이벤트
  */
 const triggerFileInput = () => {
-  fileInput.value.click();
+  // vue에서는 id 사용 지양하고 ref 사용(vue 반응형 시스템과 연동, 동적인 요소에 접근)
+  if (fileInput.value) {
+    fileInput.value.click();
+  }
 };
 
 /**
- * 파일 추가
+ * 파일 업로드 핸들러 (파일 유효성 검사)
  */
 const handleFileUpload = (event) => {
+  fileInput.value = null;
   const files = Array.from(event.target.files);
-  if (totalFiles.value + files.length > 3) {
-    alert('최대 3개의 파일만 첨부할 수 있습니다.');
-    return;
+  const maxFileSize = 20 * 1024 * 1024; // 최대 파일 크기 20MB
+  let totalSize =
+    existingFileList.value.reduce((acc, file) => acc + file.size, 0) +
+    fileList.value.reduce((acc, file) => acc + file.size, 0); // 기존 파일 크기 합산
+
+  for (let i = 0; i < files.length; i++) {
+    // 1. 파일 형식 확인
+    const fileExtension = files[i].name.split('.').pop().toLowerCase();
+    if (!ALLOWED_FILE_TYPES.includes(fileExtension)) {
+      alert(`${files[i].name}는 허용되지 않는 파일 형식입니다.`);
+      continue;
+    }
+
+    // 2. 중복 파일 확인 (기존파일, 새파일 모두 검사)
+    if (
+      fileList.value.some((f) => f.name === files[i].name && f.size === files[i].size) ||
+      existingFileList.value.some((f) => f.orgnlFileNm === files[i].name && f.fileSz === files[i].size)
+    ) {
+      alert(`"${files[i].name}"은(는) 이미 추가된 파일입니다.`);
+      continue;
+    }
+
+    // 3. 파일 추가 후 총합 크기 계산
+    if (totalSize + files[i].size > maxFileSize) {
+      alert('총 파일 크기는 20MB를 초과할 수 없습니다.');
+      return;
+    }
+
+    // 4. 파일 갯수 제한
+    if (existingFileList.value.length + fileList.value.length >= 3) {
+      alert('최대 3개 파일까지만 첨부할 수 있습니다.');
+      break;
+    }
+
+    // 5. 유효한 파일 추가
+    fileList.value.push(files[i]);
+    totalSize += files[i].size;
   }
-  fileList.value.push(...files);
+  console.log(fileList.value);
+  console.log(existingFileList.value);
 };
 
 /**
@@ -110,9 +146,10 @@ const removeFile = (index) => {
 /**
  * 기존 파일 삭제
  */
-const removeExistingFile = (fileId, index) => {
+const removeExistingFile = (fileSn, index) => {
   if (!confirm('해당 파일을 삭제하시겠습니까?')) return;
-  deleteFileSnList.value.push(fileId);
+  console.log(fileSn);
+  deleteFileSnList.value.push(fileSn);
   existingFileList.value.splice(index, 1);
 };
 
