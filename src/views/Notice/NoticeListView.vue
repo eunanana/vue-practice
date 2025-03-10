@@ -67,7 +67,7 @@ onMounted(() => {
 const getNoticeList = async () => {
   // 검색 조건을 URL에 반영하여 브라우저 히스토리에 남기기
   await get('/comm/notice/list', {
-    // 파라미터터
+    // 파라미터
     params: {
       page: page.current.value - 1, // Spring Boot 에 맞춰 0부터 시작하도록 조정
       size: page.size.value,
@@ -90,6 +90,8 @@ const getNoticeList = async () => {
     onError: () => {
       alert('공지사항 조회에 실패했습니다.');
     },
+
+    // isLoading: true, // 데이터 조회 오래 걸릴 때 로딩바 사용
   });
 };
 setOnQueryChange(getNoticeList);

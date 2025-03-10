@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // 환경 변수에서 API 주소 가져오기
   timeout: 5000, // 요청 타임아웃 설정 (5초)
   withCredentials: true, // 쿠키 자동 포함
-  headers: { 'Content-Type': 'application/json' }
+  // headers: { 'Content-Type': 'application/json' }
 });
 
 api.interceptors.request.use(config => {
@@ -65,12 +65,19 @@ api.interceptors.response.use(
 );
 
 // 공통 API 요청
-const request = async (method, url, { params = {}, data = {}, onSuccess, onError } = {}) => {
+const request = async (method, url, { isLoading = false, params = {}, data = {}, headers = {}, responseType = 'json', onSuccess, onError } = {}) => {
   const loadingStore = useLoadingStore(); // 로딩 상태 가져오기
-  loadingStore.startLoading();
+  if (isLoading) loadingStore.startLoading();
+
+  // FormData 여부 확인 (multipart/form-data 자동 적용)
+  const isFormData = data instanceof FormData;
+  const finalHeaders = {
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }), // FormData일 경우 Content-Type 제거
+    ...headers, // 추가적인 헤더 병합
+  };
 
   try {
-    const response = await api({ method, url, params, data });
+    const response = await api({ method, url, params, data, headers: finalHeaders, responseType });
     if (response?.status === 200) {
       if (onSuccess) onSuccess(response.data);
       return response.data;
@@ -83,31 +90,23 @@ const request = async (method, url, { params = {}, data = {}, onSuccess, onError
       alert("관리자에게 문의하세요.");  // 에러 콜백 함수 정의하지 않았을 경우 메시지지
     }
   } finally {
-    loadingStore.stopLoading(); // API 응답 후 로딩 종료
+    if (isLoading) loadingStore.stopLoading(); // API 응답 후 로딩 종료
   }
 };
 
 // GET 요청 함수
 export const get = (url, options = {}) => {
-  // Tree Shaking 방지
-  const safeOptions = {
-    ...options,
-    onSuccess: options.onSuccess || (() => { })
-  };
-
-  return request('get', url, safeOptions);
+  return request('get', url, { responseType: options.responseType || 'json', ...options });
 };
 
 // POST 요청 함수
 export const post = (url, options = {}) => {
-  // Tree Shaking 방지
-  const safeOptions = {
-    ...options,
-    onSuccess: options.onSuccess || (() => { })
-  };
-
-  return request('post', url, safeOptions);
+  return request('post', url, { responseType: options.responseType || 'json', ...options });
 };
 
+// multipart/form-data POST 요청 함수
+export const multipartPost = (url, options = {}) => {
+  return request('post', url, { ...options, headers: { ...options.headers } });
+};
 
 export default api;

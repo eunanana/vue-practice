@@ -1,12 +1,20 @@
 <template>
   <div class="notice-detail">
     <h2>공지사항 상세조회</h2>
-    <div v-if="notice">
-      <p><strong>제목:</strong> {{ notice.noticeTtl }}</p>
+
+    <div v-if="notice" class="notice-content">
+      <p class="title"><strong>제목:</strong> {{ notice.noticeTtl }}</p>
       <p class="content">{{ notice.noticeCtt }}</p>
-    </div>
-    <div v-else>
-      <p>data 조회중...</p>
+
+      <div v-if="fileList.length" class="file-section">
+        <ul class="file-list">
+          <li v-for="file in fileList" :key="file.fileSn" class="file-item">
+            <a class="file-link" @click="fileDownload(file.fileSn, file.srvrFileNm, file.orgnlFileNm)">
+              <i class="fas fa-file-alt"></i>{{ file.orgnlFileNm }}
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="button-group">
       <button @click="goList">목록</button>
@@ -21,12 +29,14 @@ import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { get, post } from '@/api/api';
 import { useAuthStore } from '@/stores/auth';
+import { fileDownload } from '@/common/util';
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const noticeSn = route.params.noticeSn;
 const notice = ref(null);
+const fileList = ref([]);
 
 /**
  * 공지사항 상세 조회
@@ -34,8 +44,10 @@ const notice = ref(null);
 const getNoticeDetail = async () => {
   const response = await get(`/comm/notice/${noticeSn}`);
   if (response?.code === 200) {
-    // console.log(response);
     notice.value = response.data.notice;
+    fileList.value = response.data.fileList;
+  } else {
+    alert(response.msg);
   }
 };
 
@@ -99,16 +111,29 @@ const noticeDelete = async () => {
 }
 
 h2 {
-  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
 }
 
-p {
-  font-size: 16px;
-  margin: 10px 0;
+.notice-content {
+  text-align: left;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .content {
+  font-size: 16px;
+  color: #555;
   white-space: pre-wrap;
+  margin-top: 10px;
 }
 
 .button-group {
@@ -147,5 +172,39 @@ button:hover {
 
 .delete:hover {
   background: #a71d2a;
+}
+
+.file-section {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.file-item {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.file-link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.file-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 </style>
