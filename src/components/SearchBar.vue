@@ -8,7 +8,7 @@
       type="text"
       class="search-input"
       v-model="searchKeywordModel"
-      placeholder="$t('common.search.placeholder')"
+      :placeholder="$t('common.search.placeholder')"
       @keyup.enter="onSearch"
     />
     <button class="search-btn" @click="onSearch">{{ $t('common.search.button') }}</button>

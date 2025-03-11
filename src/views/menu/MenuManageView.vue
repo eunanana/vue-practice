@@ -56,7 +56,7 @@ const menu = ref({
 });
 
 const getMenu = async () => {
-  await get('/comm/menu/list', {
+  await get('comm', '/menu/list', {
     onSuccess: (response) => {
       menuList.value = response.data;
     },
@@ -108,14 +108,14 @@ const updateMenu = async () => {
 
   if (editingMenu.value) {
     // 편집 모드일 경우 수정
-    await post(`/comm/menu/update`, {
+    await post('comm', `/menu/update`, {
       data: { ...menu.value },
       onSuccess: menuProcSuccess,
       onError: () => alert('메뉴 수정에 실패했습니다.'),
     });
   } else {
     // 편집 모드가 아니면 등록
-    await post('/comm/menu/add', {
+    await post('comm', '/menu/add', {
       data: { ...menu.value },
       onSuccess: menuProcSuccess,
       onError: () => alert('메뉴 저장에 실패했습니다.'),
@@ -127,7 +127,7 @@ const updateMenu = async () => {
  * 메뉴 삭제
  */
 const deleteMenu = async (menuCd) => {
-  await get(`/comm/menu/delete/${menuCd}`, {
+  await get('comm', `/menu/delete/${menuCd}`, {
     onSuccess: menuProcSuccess,
     onError: () => alert('메뉴 삭제에 실패했습니다.'),
   });

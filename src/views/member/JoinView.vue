@@ -58,7 +58,7 @@ const checkUserId = async () => {
     return;
   }
 
-  await get('/comm/user/duplicate-check', {
+  await get('comm', '/user/duplicate-check', {
     params: { userId: user.value.userId },
     onSuccess: (response) => {
       if (response?.code === 200) {
@@ -99,7 +99,7 @@ const signup = async () => {
 
   if (!confirm('회원가입을 하시겠습니까?')) return;
 
-  await post('/comm/user/signup', {
+  await post('comm', '/user/signup', {
     data: user.value,
     onSuccess: (response) => {
       console.log(response);

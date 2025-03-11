@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     /** 로그인 */
     async login(userId, userPswd) {
-      await post("/comm/login", {
+      await post("comm", "/login", {
         data: { userId, userPswd },
         onSuccess: (response) => {
           if (response?.code === 200) {
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       // client 로그아웃만 처리
       this.user = null;
-      localStorage.removeItem("accessToken"); // access token 초기화화
+      localStorage.removeItem("accessToken"); // access token 초기화
       sessionStorage.removeItem('menuList');  // 메뉴 초기화
     },
 
@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', {
 
     /** 권한별 메뉴 조회 */
     async fetchMenu(mbrAuth) {
-      await get('/comm/menu/list', {
+      await get("comm", '/menu/list', {
         params: { mbrAuth },
         onSuccess: (response) => this.menuSuccess(response.data),
         onError: () => alert('메뉴 조회 도중 오류가 발생했습니다.'),

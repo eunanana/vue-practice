@@ -39,7 +39,7 @@ const formatDateTime = (date, format = "YYYY-MM-DD") => {
  * @param {string} orgnlFileNm 파일 원본명
  */
 const fileDownload = async (fileSn, srvrFileNm, orgnlFileNm) => {
-  await get(`/comm/file/${fileSn}/${srvrFileNm}`, {
+  await get("comm", `/file/${fileSn}/${srvrFileNm}`, {
     responseType: 'blob',
     onSuccess: (blob) => {
       const url = window.URL.createObjectURL(new Blob([blob]));

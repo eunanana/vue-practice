@@ -69,7 +69,7 @@ const deleteFileSnList = ref([]);
 const getNoticeDetail = async () => {
   if (!isEdit.value) return;
 
-  const response = await get(`/comm/notice/${noticeSn}`);
+  const response = await get('comm', `/notice/${noticeSn}`);
   if (response?.code === 200) {
     notice.value = response.data.notice;
     existingFileList.value = response.data.fileList;
@@ -175,7 +175,7 @@ const saveNotice = async () => {
   formData.append('deleteFileSnList', new Blob([JSON.stringify(deleteFileSnList.value)], { type: 'application/json' }));
   fileList.value.forEach((file) => formData.append('files', file));
 
-  await multipartPost(`/comm/notice/${isEdit.value ? 'update' : 'save'}`, {
+  await multipartPost('comm', `/notice/${isEdit.value ? 'update' : 'save'}`, {
     data: formData,
     onSuccess: () => {
       alert(isEdit.value ? '공지사항이 수정되었습니다.' : '공지사항이 저장되었습니다.');

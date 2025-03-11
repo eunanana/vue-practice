@@ -42,7 +42,7 @@ const fileList = ref([]);
  * 공지사항 상세 조회
  */
 const getNoticeDetail = async () => {
-  const response = await get(`/comm/notice/${noticeSn}`);
+  const response = await get('comm', `/notice/${noticeSn}`);
   if (response?.code === 200) {
     notice.value = response.data.notice;
     fileList.value = response.data.fileList;
@@ -93,7 +93,7 @@ const noticeDeleteError = () => {
 const noticeDelete = async () => {
   if (!confirm('공지사항을 삭제하시겠습니까?')) return;
 
-  await post(`/comm/notice/delete/${noticeSn}`, {
+  await post('comm', `/notice/delete/${noticeSn}`, {
     onSuccess: noticeDeleteSuccess,
     onError: noticeDeleteError,
   });
